@@ -3,11 +3,11 @@
   "name": "NOVA OS",
   "short_name": "NOVA",
   "description": "Desktop virtual pribadi yang minimalis.",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [
-    "standalone",
+    "fullscreen",
     "minimal-ui"
   ],
   "orientation": "any",
