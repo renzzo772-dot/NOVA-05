@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#11151b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="NOVA OS">
+  <link rel="manifest" href="./manifest.json">
+<title>NOVA OS — Desktop</title>
+<style>
+:root{--bg:#11151b;--panel:rgba(25,31,40,.88);--panel2:#202833;--line:rgba(255,255,255,.09);--text:#edf2f7;--muted:#9ba8b7;--accent:#8bb8d8;--accent2:#c2d9e9;--shadow:0 18px 55px rgba(0,0,0,.38)}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0c1015;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,textarea{font:inherit}button{color:inherit;cursor:pointer}
+#desktop{position:relative;width:100%;height:100%;overflow:hidden;background:
+radial-gradient(ellipse at 72% 28%,rgba(85,128,157,.22),transparent 38%),
+radial-gradient(ellipse at 22% 82%,rgba(66,92,119,.19),transparent 35%),
+linear-gradient(135deg,#18212b 0%,#111820 48%,#0d131a 100%)}
+.wallpaper-orb{position:absolute;width:min(62vw,620px);aspect-ratio:1;border-radius:50%;right:9%;top:8%;background:radial-gradient(circle at 35% 32%,rgba(173,205,226,.19),rgba(93,139,169,.07) 38%,transparent 68%);filter:blur(2px);pointer-events:none}
+.desktop-icons{position:absolute;top:22px;left:18px;display:grid;grid-template-columns:repeat(1,76px);gap:13px;z-index:1}
+.desk-icon{border:1px solid transparent;background:transparent;border-radius:12px;padding:9px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11px;color:#e7edf3;text-shadow:0 1px 5px #0008;min-height:72px}
+.desk-icon:active,.desk-icon:hover{background:#ffffff12;border-color:#ffffff18}
+.iconbox{width:38px;height:38px;border-radius:12px;background:#ffffff13;display:grid;place-items:center;border:1px solid #ffffff17;color:var(--accent2)}
+.iconbox svg{width:21px;height:21px}
+#taskbar{position:absolute;z-index:1000;bottom:0;left:0;right:0;height:62px;background:rgba(15,20,27,.78);backdrop-filter:blur(22px);border-top:1px solid #ffffff14;display:flex;align-items:center;padding:0 13px;gap:9px}
+.tb-btn{height:42px;min-width:42px;border:1px solid transparent;border-radius:12px;background:transparent;display:grid;place-items:center;color:#dce6ee}
+.tb-btn:hover,.tb-btn.active{background:#ffffff13;border-color:#ffffff12}.tb-btn svg{width:21px;height:21px}
+#startBtn{background:#dceaf3;color:#263747}
+#taskApps{display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:auto;scrollbar-width:none}
+.task-app{height:38px;padding:0 11px;border-radius:10px;border:1px solid transparent;background:transparent;color:#dbe4eb;display:flex;align-items:center;gap:7px;font-size:12px;white-space:nowrap;max-width:145px}
+.task-app span{overflow:hidden;text-overflow:ellipsis}.task-app.active{background:#ffffff12;border-color:#ffffff18}
+#clock{font-size:11px;color:#d9e2e9;text-align:right;line-height:1.5;white-space:nowrap;padding:0 5px}
+#startMenu{position:absolute;z-index:1200;bottom:72px;left:12px;width:min(360px,calc(100vw - 24px));padding:18px;border:1px solid var(--line);border-radius:19px;background:rgba(24,30,38,.96);backdrop-filter:blur(24px);box-shadow:var(--shadow);display:none}
+#startMenu.open{display:block;animation:rise .16s ease-out}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.start-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.start-head strong{font-size:15px;letter-spacing:.02em}.start-search{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:11px;background:#111820;color:var(--text);outline:none;margin-bottom:15px;font-size:13px}
+.section-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:8px 0}
+.app-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.app-launch{background:transparent;border:1px solid transparent;border-radius:12px;padding:12px 5px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;color:#dce5ed}
+.app-launch:hover{background:#ffffff0d;border-color:var(--line)}.app-launch .iconbox{width:36px;height:36px}
+.window{position:absolute;z-index:10;left:50%;top:48%;transform:translate(-50%,-50%);width:min(700px,calc(100vw - 34px));height:min(490px,calc(100% - 105px));min-width:min(290px,calc(100vw - 24px));min-height:190px;background:rgba(24,30,38,.97);border:1px solid #ffffff1c;border-radius:15px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+.window.maximized{left:9px!important;top:9px!important;transform:none!important;width:calc(100% - 18px)!important;height:calc(100% - 82px)!important}
+.titlebar{height:43px;flex:0 0 43px;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 14px;background:#ffffff06;border-bottom:1px solid var(--line);touch-action:none;cursor:grab}
+.titlebar:active{cursor:grabbing}.win-title{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600}.win-title .mini-icon{color:var(--accent2);display:grid;place-items:center}.mini-icon svg{width:17px;height:17px}
+.win-controls{display:flex;gap:5px}.win-control{width:28px;height:27px;border:0;border-radius:7px;background:transparent;color:#b8c4ce;font-size:15px}.win-control:hover{background:#ffffff16}.win-control.close:hover{background:#a94f55;color:white}
+.win-content{flex:1;min-height:0;overflow:auto;padding:18px;font-size:13px;color:#dce4eb}
+.welcome{max-width:520px;margin:5px auto;text-align:center;padding:24px 10px}.welcome-mark{width:68px;height:68px;border-radius:21px;background:linear-gradient(145deg,#d5e6f1,#799bb3);color:#263949;display:grid;place-items:center;margin:0 auto 18px;font-size:27px;font-weight:700;letter-spacing:-2px}.welcome h1{font-size:25px;font-weight:550;letter-spacing:-.04em;margin:0 0 8px}.welcome p{color:var(--muted);line-height:1.65;margin:0 auto 20px;max-width:390px}
+.primary{border:0;background:#d7e7f1;color:#1e3040;border-radius:9px;padding:10px 15px;font-weight:650;font-size:12px}.secondary{border:1px solid var(--line);background:#ffffff09;color:#dce6ed;border-radius:9px;padding:9px 12px;font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}.card{border:1px solid var(--line);background:#ffffff06;border-radius:12px;padding:14px}.card .big{font-size:22px;margin-bottom:9px}.card b{display:block;font-size:12px;margin-bottom:4px}.card small{color:var(--muted);line-height:1.45}
+.file-row{display:flex;align-items:center;gap:11px;padding:11px;border-bottom:1px solid var(--line)}.file-row:last-child{border:0}.file-emoji{font-size:20px}.file-row small{display:block;color:var(--muted);margin-top:3px}
+.note-area{width:100%;height:100%;min-height:180px;resize:none;background:transparent;color:#e5edf4;border:0;outline:none;font-size:14px;line-height:1.7}
+.setting-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.setting-row small{display:block;color:var(--muted);margin-top:4px}
+.terminal{background:#0b1015;border-radius:10px;padding:14px;font-family:ui-monospace,monospace;color:#b8d6c4;height:100%;overflow:auto;line-height:1.7}.terminal input{background:transparent;border:0;outline:0;color:#e5edf4;font-family:inherit;width:75%}
+.browserbar{display:flex;gap:7px;margin-bottom:14px}.browserbar input{min-width:0;flex:1;background:#111820;border:1px solid var(--line);border-radius:8px;padding:9px 11px;color:var(--text);outline:none}
+.empty-state{text-align:center;color:var(--muted);padding:35px 10px}.empty-state .big{font-size:34px;margin-bottom:8px}
+#toast{position:absolute;z-index:2000;bottom:76px;left:50%;transform:translateX(-50%);background:#e1edf5;color:#233747;padding:10px 15px;border-radius:10px;font-size:12px;box-shadow:var(--shadow);display:none;white-space:nowrap}
+#rotateHint{display:none}
+@media(orientation:portrait){
+ .desktop-icons{top:12px;left:10px;grid-template-columns:repeat(2,68px);gap:5px}
+ .window{width:calc(100vw - 20px);height:min(66vh,540px);top:47%}
+ #taskbar{height:58px;padding:0 7px;gap:4px}
+ #clock{font-size:10px}
+ .task-app{padding:0 8px;max-width:92px}
+ #rotateHint{display:block;position:absolute;right:12px;top:13px;color:#dbe5ed99;font-size:10px;background:#11182077;padding:7px 9px;border-radius:8px}
+}
+@media(max-width:390px){.task-app{max-width:68px;font-size:10px}#clock{font-size:9px}.tb-btn{min-width:37px}.window{height:65vh}}
+</style>
+</head>
+<body>
+<div id="desktop">
+ <div class="wallpaper-orb"></div>
+ <div id="rotateHint">Landscape = pengalaman PC lebih luas</div>
+ <div class="desktop-icons" id="desktopIcons"></div>
+ <div id="startMenu">
+  <div class="start-head"><strong>NOVA OS</strong><span style="font-size:11px;color:var(--muted)">Workspace</span></div>
+  <input class="start-search" id="appSearch" placeholder="Cari aplikasi..." autocomplete="off">
+  <div class="section-label">Pinned</div>
+  <div class="app-grid" id="appGrid"></div>
+ </div>
+ <div id="toast" role="status"></div>
+ <div id="taskbar">
+  <button class="tb-btn" id="startBtn" aria-label="Start menu" title="Start">
+   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+  </button>
+  <div id="taskApps"></div>
+  <button class="tb-btn" id="rotateBtn" title="Petunjuk orientasi" aria-label="Petunjuk orientasi">
+   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M3 8a8 8 0 0 1 13-4M16 2v3h-3"/></svg>
+  </button>
+  <div id="clock">--:--<br>--/--</div>
+ </div>
+</div>
+<script>
+(()=>{
+const $=s=>document.querySelector(s), desktop=$("#desktop"), menu=$("#startMenu"), grid=$("#appGrid"), taskApps=$("#taskApps");
+const icons={
+ home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/></svg>',
+ files:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+ notes:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5M8 13h8M8 17h8"/></svg>',
+ settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.1 1.9-2 2-1.9-1.1a8 8 0 0 1-2 .8L14 21h-3l-.7-2.3a8 8 0 0 1-2-.8L6.4 19l-2-2 1.1-1.9a8 8 0 0 1-.8-2L2.5 12l2.2-.8a8 8 0 0 1 .8-2L4.4 7.3l2-2 1.9 1.1a8 8 0 0 1 2-.8L11 3h3l.7 2.3a8 8 0 0 1 2 .8l1.9-1.1 2 2-1.1 1.9a8 8 0 0 1 .8 2l2.2.8-2.2.8a8 8 0 0 1-.9 2.5z"/></svg>',
+ terminal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m4 6 6 6-6 6M12 18h8"/></svg>',
+ browser:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+ games:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 8h10a4 4 0 0 1 3.8 5.2l-1.2 4a2 2 0 0 1-3.2 1l-2.2-1.7h-4.4l-2.2 1.7a2 2 0 0 1-3.2-1l-1.2-4A4 4 0 0 1 7 8z"/><path d="M8 11v4M6 13h4M16 12h.01M18 14h.01"/></svg>'
+};
+const apps=[
+{id:"home",name:"Welcome",icon:"home",desc:"Halaman utama"},
+{id:"files",name:"NOVA Files",icon:"files",desc:"File Explorer"},
+{id:"notes",name:"Notepad",icon:"notes",desc:"Catatan sederhana"},
+{id:"browser",name:"Browser",icon:"browser",desc:"Pratinjau browser"},
+{id:"games",name:"Game Center",icon:"games",desc:"Pusat permainan"},
+{id:"terminal",name:"Terminal",icon:"terminal",desc:"Terminal simulasi"},
+{id:"settings",name:"Settings",icon:"settings",desc:"Pengaturan sistem"}
+];
+let windows=[],z=20,active=null,toastTimer;
+const savedNote=()=>{try{return localStorage.getItem("nova-note")||""}catch(e){return""}};
+function notify(msg){const t=$("#toast");t.textContent=msg;t.style.display="block";clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.display="none",2200)}
+function appIcon(a){return `<span class="iconbox">${icons[a.icon]}</span>`}
+function renderLaunchers(){
+ grid.innerHTML=apps.map(a=>`<button class="app-launch" data-launch="${a.id}">${appIcon(a)}<span>${a.name}</span></button>`).join("");
+ $("#desktopIcons").innerHTML=apps.filter(a=>["files","notes","games","browser"].includes(a.id)).map(a=>`<button class="desk-icon" data-launch="${a.id}">${appIcon(a)}<span>${a.name}</span></button>`).join("");
+}
+function contentFor(id){
+ if(id==="home")return `<div class="welcome"><div class="welcome-mark">N</div><h1>Welcome to NOVA OS</h1><p>Ruang kerja digital yang sederhana, tenang, dan siap kamu kembangkan. Buka aplikasi dari Start Menu atau ikon desktop.</p><button class="primary" data-open="files">Jelajahi file</button></div><div class="cards"><div class="card"><div class="big">⌘</div><b>Workspace</b><small>Desktop virtual pribadi.</small></div><div class="card"><div class="big">◫</div><b>Multitasking</b><small>Buka beberapa jendela sekaligus.</small></div><div class="card"><div class="big">✧</div><b>Personal</b><small>Atur pengalaman sesuai selera.</small></div></div>`;
+ if(id==="files")return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div><b style="font-size:16px">Home</b><div style="color:var(--muted);font-size:11px;margin-top:4px">Penyimpanan virtual NOVA</div></div><span style="color:var(--muted);font-size:11px">3 item</span></div><div class="file-row"><span class="file-emoji">📁</span><div><b>Documents</b><small>Folder · Ruang dokumen</small></div></div><div class="file-row"><span class="file-emoji">🖼️</span><div><b>Pictures</b><small>Folder · Koleksi gambar</small></div></div><div class="file-row"><span class="file-emoji">🎮</span><div><b>Games</b><small>Folder · Koleksi game</small></div></div><p style="color:var(--muted);font-size:11px;margin-top:18px">Ini adalah penyimpanan simulasi. Fitur membaca file perangkat akan ditambahkan terpisah.</p>`;
+ if(id==="notes")return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b>Catatan cepat</b><span style="font-size:11px;color:var(--muted)" id="saveState">Tersimpan otomatis</span></div><textarea class="note-area" id="noteArea" placeholder="Mulai tulis sesuatu...">${escapeHtml(savedNote())}</textarea>`;
+ if(id==="settings")return `<h3 style="font-size:17px;margin:0 0 6px">Personalization</h3><p style="color:var(--muted);margin:0 0 12px">Atur tampilan workspace.</p><div class="setting-row"><div><b>Mode tampilan</b><small>Tampilan gelap yang nyaman</small></div><button class="secondary" id="themeToggle">Dark mode ✓</button></div><div class="setting-row"><div><b>Warna aksen</b><small>Biru lembut NOVA</small></div><span style="width:24px;height:24px;border-radius:50%;background:#8bb8d8;border:3px solid #ffffff22"></span></div><div class="setting-row"><div><b>Orientasi</b><small>Putar HP ke landscape untuk ruang kerja lebih luas</small></div><button class="secondary" id="orientationTip">Info</button></div><div class="setting-row"><div><b>Tentang NOVA OS</b><small>Prototype 0.1 · Web desktop</small></div><span style="color:var(--muted);font-size:11px">Build 001</span></div>`;
+ if(id==="terminal")return `<div class="terminal" id="terminalBox"><div>NOVA Terminal [Version 0.1]</div><div>Simulasi terminal — ketik <b>help</b> untuk daftar perintah.</div><div style="margin-top:10px">guest@nova:~$ <input id="termInput" autocomplete="off" spellcheck="false" aria-label="Perintah terminal"></div></div>`;
+ if(id==="browser")return `<div class="browserbar"><input id="browserInput" value="nova://home" aria-label="Alamat"><button class="secondary" id="browserGo">Buka</button></div><div class="welcome" style="padding-top:18px"><div class="welcome-mark" style="font-size:23px">N</div><h1>NOVA Browser</h1><p>Ini adalah tampilan browser konsep. Navigasi internet sungguhan belum diaktifkan pada prototype ini.</p><div class="cards"><div class="card"><b>Quick access</b><small>Beranda NOVA</small></div><div class="card"><b>Bookmarks</b><small>Belum ada bookmark</small></div></div></div>`;
+ if(id==="games")return `<h3 style="margin:0 0 5px;font-size:17px">Game Center</h3><p style="color:var(--muted);margin:0 0 16px">Tempat berkumpulnya game buatan kita.</p><div class="cards"><div class="card"><div class="big">🧩</div><b>Coming soon</b><small>Game puzzle ringan akan hadir di sini.</small></div><div class="card"><div class="big">⚔️</div><b>RPG Pixel</b><small>Proyek game petualangan pertama.</small></div><div class="card"><div class="big">🏁</div><b>Arcade</b><small>Kumpulan game mini.</small></div></div>`;
+ return "";
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function openApp(id){
+ const app=apps.find(a=>a.id===id);if(!app)return;
+ menu.classList.remove("open");
+ let w=windows.find(x=>x.id===id);
+ if(w){w.el.style.display="flex";focusWindow(w);return}
+ const el=document.createElement("section");el.className="window";el.dataset.id=id;el.style.zIndex=++z;
+ el.innerHTML=`<div class="titlebar"><div class="win-title"><span class="mini-icon">${icons[app.icon]}</span>${app.name}</div><div class="win-controls"><button class="win-control minimize" title="Minimize">−</button><button class="win-control maximize" title="Maximize">□</button><button class="win-control close" title="Close">×</button></div></div><div class="win-content">${contentFor(id)}</div>`;
+ desktop.appendChild(el);w={id,el,app};windows.push(w);focusWindow(w);wireWindow(w);renderTaskApps();
+}
+function focusWindow(w){windows.forEach(x=>x.el.style.zIndex=++z);w.el.style.zIndex=++z;active=w;renderTaskApps()}
+function renderTaskApps(){taskApps.innerHTML=windows.map(w=>`<button class="task-app ${active===w?"active":""}" data-task="${w.id}">${appIcon(w.app)}<span>${w.app.name}</span></button>`).join("")}
+function closeWindow(w){w.el.remove();windows=windows.filter(x=>x!==w);if(active===w)active=windows[windows.length-1]||null;renderTaskApps()}
+function wireWindow(w){
+ const el=w.el,bar=el.querySelector(".titlebar");
+ el.addEventListener("pointerdown",()=>focusWindow(w));
+ el.querySelector(".close").onclick=()=>closeWindow(w);
+ el.querySelector(".minimize").onclick=()=>{el.style.display="none";if(active===w)active=windows.filter(x=>x!==w&&x.el.style.display!=="none").pop()||null;renderTaskApps()};
+ el.querySelector(".maximize").onclick=()=>{el.classList.toggle("maximized");el.style.transform=el.classList.contains("maximized")?"none":"translate(-50%,-50%)";};
+ let drag=null;
+ bar.addEventListener("pointerdown",e=>{if(e.target.closest("button")||el.classList.contains("maximized"))return;drag={x:e.clientX,y:e.clientY,left:el.offsetLeft,top:el.offsetTop};bar.setPointerCapture(e.pointerId)});
+ bar.addEventListener("pointermove",e=>{if(!drag)return;let dx=e.clientX-drag.x,dy=e.clientY-drag.y;el.style.left=(drag.left+dx+el.offsetWidth/2)+"px";el.style.top=(drag.top+dy+el.offsetHeight/2)+"px";});
+ bar.addEventListener("pointerup",()=>drag=null);bar.addEventListener("pointercancel",()=>drag=null);
+ if(w.id==="notes"){const area=el.querySelector("#noteArea");area.addEventListener("input",()=>{try{localStorage.setItem("nova-note",area.value);el.querySelector("#saveState").textContent="Tersimpan otomatis"}catch(e){el.querySelector("#saveState").textContent="Penyimpanan tidak tersedia"}})}
+ if(w.id==="settings"){el.querySelector("#orientationTip").onclick=()=>notify("Putar perangkat ke landscape untuk tampilan lebih luas.");el.querySelector("#themeToggle").onclick=()=>notify("Mode gelap adalah tema prototype saat ini.");}
+ if(w.id==="browser"){el.querySelector("#browserGo").onclick=()=>notify("Browser internet belum diaktifkan.");}
+ if(w.id==="terminal"){
+ const input=el.querySelector("#termInput"),box=el.querySelector("#terminalBox");
+ input.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const cmd=input.value.trim().toLowerCase();const line=document.createElement("div");line.textContent="guest@nova:~$ "+input.value;box.insertBefore(line,input.parentElement);const out=document.createElement("div");out.style.color="#9ba8b7";out.textContent=({help:"Perintah: help, date, whoami, clear, about",date:new Date().toString(),whoami:"guest",about:"NOVA OS prototype 0.1"}[cmd]|| (cmd==="clear"?"": "Perintah tidak dikenal. Ketik help."));if(out.textContent)box.insertBefore(out,input.parentElement);input.value="";box.scrollTop=box.scrollHeight;});
+ }
+}
+$("#startBtn").onclick=()=>menu.classList.toggle("open");
+desktop.addEventListener("click",e=>{const launch=e.target.closest("[data-launch]");if(launch)openApp(launch.dataset.launch);const task=e.target.closest("[data-task]");if(task){const w=windows.find(x=>x.id===task.dataset.task);if(w){if(active===w&&w.el.style.display!=="none"){w.el.style.display="none";active=null}else{w.el.style.display="flex";focusWindow(w)}}}const open=e.target.closest("[data-open]");if(open)openApp(open.dataset.open)});
+$("#appSearch").addEventListener("input",e=>{const q=e.target.value.toLowerCase();grid.querySelectorAll(".app-launch").forEach(b=>b.style.display=b.textContent.toLowerCase().includes(q)?"flex":"none")});
+$("#rotateBtn").onclick=()=>notify("Tips: putar HP ke landscape agar desktop terasa seperti monitor PC.");
+document.addEventListener("pointerdown",e=>{if(!menu.contains(e.target)&&!$("#startBtn").contains(e.target))menu.classList.remove("open")});
+function tick(){const d=new Date();$("#clock").innerHTML=d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})+"<br>"+d.toLocaleDateString("id-ID",{day:"2-digit",month:"short"})}
+renderLaunchers();tick();setInterval(tick,1000);openApp("home");
+})();
+</script>
+<script>
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(err => console.log("SW:", err)));
+}
+</script>
+</body>
+</html>
